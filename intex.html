@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chá de Casa Nova — Gabi e Lucas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E6;
+    --paper:#FFFDF8;
+    --ink:#2B2720;
+    --ink-soft:#645C4E;
+    --forest:#3F5443;
+    --forest-dark:#2E3F32;
+    --clay:#A9714A;
+    --clay-light:#E9DCCB;
+    --line:#E4DBC6;
+    --sage-tint:#EEF1E5;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:28px 18px 80px;
+  }
+  header{
+    margin-bottom:22px;
+  }
+  .eyebrow{
+    font-size:13px;
+    color:var(--clay);
+    letter-spacing:0.02em;
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:34px;
+    line-height:1.12;
+    color:var(--forest-dark);
+    margin:0 0 10px;
+  }
+  .lead{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0 0 4px;
+    max-width:54ch;
+  }
+  .prefs{
+    margin-top:12px;
+    padding:12px 14px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:10px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .prefs b{color:var(--ink);font-weight:600;}
+
+  .progress-block{
+    margin-top:20px;
+  }
+  .progress-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .progress-row strong{
+    color:var(--forest-dark);
+    font-size:15px;
+  }
+  .bar{
+    height:8px;
+    background:var(--clay-light);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    background:var(--forest);
+    border-radius:6px;
+    width:0%;
+    transition:width .4s ease;
+  }
+
+  .status-line{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:16px;
+    text-align:center;
+  }
+  .status-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-top:16px;
+  }
+  .status-row .status-line{margin-top:0;}
+  .refresh-btn{
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--forest-dark);
+    font-size:12px;
+    font-weight:600;
+    font-family:inherit;
+    padding:5px 11px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .refresh-btn:hover{background:var(--sage-tint);}
+  .refresh-btn:disabled{opacity:.5;cursor:default;}
+
+  .category{
+    margin-top:26px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--paper);
+    overflow:hidden;
+  }
+  .cat-header{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px 16px;
+    background:transparent;
+    border:none;
+    cursor:pointer;
+    text-align:left;
+    font-family:'Fraunces',serif;
+    font-size:19px;
+    font-weight:500;
+    color:var(--forest-dark);
+  }
+  .cat-header .count{
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--ink-soft);
+    background:var(--sage-tint);
+    padding:3px 9px;
+    border-radius:20px;
+    white-space:nowrap;
+    margin-left:10px;
+  }
+  .cat-header .chev{
+    margin-left:auto;
+    padding-left:10px;
+    font-size:13px;
+    color:var(--ink-soft);
+    transition:transform .25s ease;
+    flex-shrink:0;
+  }
+  .cat-header.open .chev{transform:rotate(180deg);}
+  .cat-header .title-line{
+    display:flex;
+    align-items:center;
+    flex:1;
+    min-width:0;
+  }
+
+  .items{
+    display:none;
+    border-top:1px solid var(--line);
+  }
+  .items.open{display:block;}
+
+  .item{
+    padding:13px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .item:last-child{border-bottom:none;}
+
+  .item-row{
+    display:flex;
+    align-items:flex-start;
+    gap:11px;
+    cursor:pointer;
+  }
+  .check{
+    flex-shrink:0;
+    width:21px;height:21px;
+    border-radius:6px;
+    border:1.5px solid var(--ink-soft);
+    margin-top:1px;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s, border-color .15s;
+  }
+  .item.taken .check{
+    background:var(--forest);
+    border-color:var(--forest);
+  }
+  .check svg{
+    width:13px;height:13px;
+    opacity:0;
+    transition:opacity .15s;
+  }
+  .item.taken .check svg{opacity:1;}
+
+  .item-main{flex:1;min-width:0;}
+  .item-name{
+    font-size:15px;
+    color:var(--ink);
+  }
+  .item.taken .item-name{color:var(--ink-soft);}
+  .item-meta{
+    margin-top:3px;
+    font-size:13px;
+    color:var(--clay);
+  }
+  .item-meta .obs{color:var(--ink-soft);}
+
+  .edit-panel{
+    display:none;
+    margin-top:11px;
+    padding:12px;
+    background:var(--sage-tint);
+    border-radius:10px;
+  }
+  .edit-panel.open{display:block;}
+  .edit-panel label{
+    display:block;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-bottom:3px;
+    font-weight:500;
+  }
+  .edit-panel input{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:14px;
+    font-family:inherit;
+    margin-bottom:9px;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .edit-panel input:focus{outline:2px solid var(--forest);outline-offset:1px;}
+  .edit-actions{
+    display:flex;
+    gap:8px;
+  }
+  .btn{
+    border:none;
+    border-radius:8px;
+    padding:9px 14px;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .btn-primary{
+    background:var(--forest);
+    color:#fff;
+  }
+  .btn-primary:hover{background:var(--forest-dark);}
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+  }
+  .btn-ghost:hover{background:var(--clay-light);}
+  .btn-text{
+    background:none;
+    border:none;
+    color:var(--clay);
+    font-size:12.5px;
+    font-weight:600;
+    cursor:pointer;
+    padding:0;
+    margin-top:6px;
+  }
+
+  footer{
+    margin-top:34px;
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+
+  @media (min-width:640px){
+    .wrap{padding-top:44px;}
+    h1{font-size:40px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Chá de casa nova</p>
+    <h1>Gabi &amp; Lucas</h1>
+    <p class="lead">Escolha um item da lista abaixo e coloque seu nome — assim todo mundo vê em tempo real o que já foi escolhido, direto do celular ou do computador.</p>
+    <div class="prefs"><b>Preferências do casal:</b> bege claro, preto, branco, vidro, inox e madeira — estampa lisa para tecidos.</div>
+  </header>
+
+  <div class="progress-block">
+    <div class="progress-row">
+      <span>Presentes escolhidos</span>
+      <strong id="progress-count">0 / 0</strong>
+    </div>
+    <div class="bar"><div class="bar-fill" id="progress-fill"></div></div>
+  </div>
+
+  <div class="status-row">
+    <p class="status-line" id="status-line">Carregando lista…</p>
+    <button class="refresh-btn" id="refresh-btn" title="Buscar atualizações da planilha">↻ Atualizar</button>
+  </div>
+
+  <div id="categories"></div>
+
+  <footer>Toque em um item para escolher ou editar. As alterações ficam salvas para todos os convidados.</footer>
+</div>
+
+<script>
+const CATEGORIES = [
+  {
+    name: "Cozinha",
+    items: [
+      "Panela de Pressão de abertura externa",
+      "Jogo de panelas",
+      "Assadeira e Forma de bolo (Média)",
+      "Garrafa Térmica",
+      "Kit de Potes Electrolux",
+      "Potes Herméticos para guardar mantimentos",
+      "Bowls",
+      "Moedor de pimenta",
+      "Jogo de Talheres de inox (Faqueiro)",
+      "Espremedor de Limão manual",
+      ["Aparelho de Jantar (20 peças)", "Margarete & Cesar"],
+      ["Jogo de Copos (6 uni - vidro transparente)", "Celi"],
+      "Jogo de Taças",
+      "Descanso de Panelas",
+      ["Travessa pequena", "Grazy"],
+      ["Travessa grande", "Grazy"],
+      ["Jarra de Suco (de Vidro)", "Nilde"],
+      "Mini Processador de alimentos manual",
+      "Tábua de corte retangular",
+      "Ralador e Descascador de legumes",
+      "Peneira e Abridor de latas",
+      "Cortador de pizza e Funil",
+      "Espátula de Silicone",
+      ["Concha e Escumadeira inox", "Pra Vanusa"],
+      "Colher grande e Luva térmica",
+      "Bandeja Organizadora",
+      "Jogo de Tapetes (Passadeira de cozinha)",
+      "Escorredor de macarrão de inox",
+      ["Escorredor de arroz de inox", "", true],
+      "Jogo americano de mesa",
+      "Toalha de mesa",
+      ["Colher de pau", "Pra Vanusa"],
+      "Fuê de inox (Batedor de ovos) e Espátula para bolo de inox",
+      "Pegador de alimentos e avental",
+      "Saladeira e soquete",
+      "Porta temperos",
+      ["Açucareiro", "Nilde"],
+      ["Cesta para pão", "Thalita"],
+      "Petisqueira",
+      "Lixeira com pedal",
+      "Organizador de geladeira",
+      "Copo medidor",
+      "Suporte de papel toalha",
+      "Galheteiro",
+      "Saleiro"
+    ]
+  },
+  {
+    name: "Quarto",
+    items: [
+      ["Jogo de cama", "Luísa"],
+      "Edredom",
+      "Cabides",
+      "Organizador de Gavetas",
+      ["Cobertor ou manta", "Érica — manta"],
+      "Protetor de colchão (Queen)"
+    ]
+  },
+  {
+    name: "Banheiro",
+    items: [
+      "Jogo de toalhas - banho e rosto",
+      ["Jogo de toalhas - banho e rosto", "Thâmilly"],
+      "Toalha de piso",
+      "Toalha de piso",
+      "Tapete antiderrapante",
+      "Tapete antiderrapante",
+      "Kit de Banheiro (porta sabonete líquido, escova de dentes...)",
+      "Escova sanitária",
+      "Lixeira com pedal"
+    ]
+  },
+  {
+    name: "Lavanderia",
+    items: [
+      "Cesto de Roupas",
+      "Balde + Bacia",
+      "Tábua de passar",
+      "Caixa Organizadora",
+      "Panos de chão (2)",
+      "Panos de chão (2)",
+      "Dispenser para sabão líquido / porta-amaciante",
+      "Vassoura e Rodo",
+      "Pá de lixo e Escova",
+      "Mop",
+      "Balde de lixo",
+      "Lixeira com tampa"
+    ]
+  },
+  {
+    name: "Eletrodomésticos",
+    items: [
+      ["Liquidificador", "", true],
+      "Processador de alimentos",
+      ["Espremedor", "", true],
+      ["Aspirador de pó", "Nilde"],
+      "Ferro de passar ou a vapor",
+      "Panela elétrica",
+      ["Cafeteira", "Jéssica e Rodrigo"],
+      ["Microondas", "Thais e Fátima"],
+      "Chaleira elétrica",
+      ["Air Fryer", "Vinícius"],
+      "Batedeira"
+    ]
+  }
+];
+
+// Build flat item registry with stable ids and defaults
+const itemDefs = [];
+CATEGORIES.forEach((cat, ci) => {
+  cat.items.forEach((raw, ii) => {
+    let name, reservedBy = "", taken = false;
+    if (Array.isArray(raw)) {
+      name = raw[0];
+      reservedBy = raw[1] || "";
+      taken = raw[2] === true || !!reservedBy;
+    } else {
+      name = raw;
+    }
+    itemDefs.push({
+      id: "c" + ci + "-i" + ii,
+      category: cat.name,
+      name,
+      defaultReservedBy: reservedBy,
+      defaultTaken: taken
+    });
+  });
+});
+
+// Cole aqui a URL do Apps Script publicado (termina em /exec).
+// Enquanto estiver vazia, a lista funciona normalmente, só não escreve na planilha.
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9o6GyleuaL2GAkE4rV4naZ-spff7h8cPmt1ym2TkLG5StduaOiGqYo-MVjh5KvOYVnQ/exec";
+
+// A ordem dos itens acima é exatamente a ordem das linhas na planilha,
+// começando na linha 3 (linha 1 = cabeçalho, linha 2 = observações gerais).
+const FIRST_DATA_ROW = 3;
+itemDefs.forEach((def, idx) => { def.row = FIRST_DATA_ROW + idx; });
+
+function syncToSheet(def, s){
+  if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("http") !== 0) return;
+  try{
+    fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        row: def.row,
+        item: def.name,
+        category: def.category,
+        taken: s.taken,
+        reservedBy: s.reservedBy || ""
+      })
+    });
+  }catch(e){
+    console.error("Falha ao sincronizar com a planilha", e);
+  }
+}
+
+const STORAGE_KEY = "registry-state-v1";
+let state = {}; // id -> {taken, reservedBy}
+
+function defaultState(){
+  const s = {};
+  itemDefs.forEach(d => {
+    s[d.id] = { taken: d.defaultTaken, reservedBy: d.defaultReservedBy };
+  });
+  return s;
+}
+
+async function fetchFromSheet(){
+  if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("http") !== 0) return null;
+  try{
+    const res = await fetch(APPS_SCRIPT_URL, { method: "GET" });
+    if(!res.ok) return null;
+    const data = await res.json();
+    if(!data || !data.ok || !data.items) return null;
+    const merged = defaultState();
+    itemDefs.forEach(def => {
+      const rowData = data.items[def.row] || data.items[String(def.row)];
+      if(rowData){
+        merged[def.id] = { taken: !!rowData.taken, reservedBy: rowData.reservedBy || "" };
+      }
+    });
+    return merged;
+  }catch(e){
+    console.error("Falha ao buscar dados da planilha", e);
+    return null;
+  }
+}
+
+async function cacheLocally(){
+  try{ await window.storage.set(STORAGE_KEY, JSON.stringify(state), true); }catch(e){ /* best effort */ }
+}
+
+async function loadState(){
+  // A planilha é a fonte de verdade. Só cai para o cache local
+  // se não conseguir falar com o Apps Script (offline, URL não configurada, etc).
+  const fromSheet = await fetchFromSheet();
+  if(fromSheet){
+    state = fromSheet;
+    await cacheLocally();
+    return true;
+  }
+  try{
+    const res = await window.storage.get(STORAGE_KEY, true);
+    if(res && res.value){
+      const saved = JSON.parse(res.value);
+      const merged = defaultState();
+      Object.keys(saved).forEach(k => { if(merged[k]) merged[k] = saved[k]; });
+      state = merged;
+    } else {
+      state = defaultState();
+    }
+  }catch(e){
+    state = defaultState();
+  }
+  return false;
+}
+
+async function saveState(){
+  await cacheLocally();
+}
+
+const openCategories = new Set();
+
+function render(){
+  const container = document.getElementById("categories");
+  container.innerHTML = "";
+
+  let totalTaken = 0;
+  const total = itemDefs.length;
+
+  CATEGORIES.forEach((cat, ci) => {
+    const catItems = itemDefs.filter(d => d.category === cat.name);
+    const catTaken = catItems.filter(d => state[d.id] && state[d.id].taken).length;
+    totalTaken += catTaken;
+
+    const catEl = document.createElement("div");
+    catEl.className = "category";
+
+    const isOpen = openCategories.has(cat.name);
+
+    const header = document.createElement("button");
+    header.className = "cat-header" + (isOpen ? " open" : "");
+    header.innerHTML = `
+      <span class="title-line">${cat.name}
+        <span class="count">${catTaken}/${catItems.length}</span>
+      </span>
+      <span class="chev">▾</span>`;
+
+    const itemsWrap = document.createElement("div");
+    itemsWrap.className = "items" + (isOpen ? " open" : "");
+
+    catItems.forEach(def => {
+      itemsWrap.appendChild(renderItem(def));
+    });
+
+    header.addEventListener("click", () => {
+      const nowOpen = itemsWrap.classList.toggle("open");
+      header.classList.toggle("open", nowOpen);
+      if(nowOpen) openCategories.add(cat.name); else openCategories.delete(cat.name);
+    });
+
+    catEl.appendChild(header);
+    catEl.appendChild(itemsWrap);
+    container.appendChild(catEl);
+  });
+
+  document.getElementById("progress-count").textContent = totalTaken + " / " + total;
+  document.getElementById("progress-fill").style.width = total ? (totalTaken/total*100) + "%" : "0%";
+}
+
+function setStatus(usedSheet){
+  const el = document.getElementById("status-line");
+  if(usedSheet){
+    const now = new Date();
+    const time = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    el.textContent = "Atualizado às " + time + " a partir da planilha.";
+  } else {
+    el.textContent = "Não foi possível falar com a planilha agora — mostrando a última versão salva.";
+  }
+}
+
+function renderItem(def){
+  const s = state[def.id] || { taken:false, reservedBy:"" };
+  const item = document.createElement("div");
+  item.className = "item" + (s.taken ? " taken" : "");
+  item.dataset.id = def.id;
+
+  const row = document.createElement("div");
+  row.className = "item-row";
+  row.innerHTML = `
+    <div class="check">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.2 12L13 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="item-main">
+      <div class="item-name">${def.name}</div>
+      <div class="item-meta">${metaText(s)}</div>
+    </div>`;
+
+  const panel = document.createElement("div");
+  panel.className = "edit-panel";
+  panel.innerHTML = `
+    <label>Seu nome</label>
+    <input type="text" class="name-input" placeholder="Ex: Ana e Marcos" value="${escapeHtml(s.reservedBy || "")}">
+    <div class="edit-actions">
+      <button class="btn btn-primary btn-save">Confirmar</button>
+      ${s.taken ? '<button class="btn btn-ghost btn-clear">Desmarcar</button>' : '<button class="btn btn-ghost btn-cancel">Cancelar</button>'}
+    </div>`;
+
+  row.addEventListener("click", () => {
+    const isOpen = panel.classList.toggle("open");
+    if(isOpen){
+      const input = panel.querySelector(".name-input");
+      setTimeout(() => input.focus(), 50);
+    }
+  });
+
+  panel.querySelector(".btn-save").addEventListener("click", async (e) => {
+    e.stopPropagation();
+    const val = panel.querySelector(".name-input").value.trim();
+    state[def.id] = { taken: true, reservedBy: val };
+    await saveState();
+    syncToSheet(def, state[def.id]);
+    render();
+    document.getElementById("status-line").textContent = "Presente confirmado — enviando para a planilha…";
+  });
+
+  const cancelBtn = panel.querySelector(".btn-cancel");
+  if(cancelBtn){
+    cancelBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      panel.classList.remove("open");
+    });
+  }
+  const clearBtn = panel.querySelector(".btn-clear");
+  if(clearBtn){
+    clearBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      state[def.id] = { taken: false, reservedBy: "" };
+      await saveState();
+      syncToSheet(def, state[def.id]);
+      render();
+      document.getElementById("status-line").textContent = "Item desmarcado — enviando para a planilha…";
+    });
+  }
+
+  item.appendChild(row);
+  item.appendChild(panel);
+  return item;
+}
+
+function metaText(s){
+  if(!s.taken) return "Disponível";
+  if(s.reservedBy) return "Escolhido por " + escapeHtml(s.reservedBy);
+  return "Já escolhido";
+}
+
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+(async function init(){
+  openCategories.add(CATEGORIES[0].name);
+  const ok = await loadState();
+  render();
+  setStatus(ok);
+
+  const refreshBtn = document.getElementById("refresh-btn");
+  refreshBtn.addEventListener("click", async () => {
+    refreshBtn.disabled = true;
+    document.getElementById("status-line").textContent = "Buscando atualizações…";
+    const ok2 = await loadState();
+    render();
+    setStatus(ok2);
+    refreshBtn.disabled = false;
+  });
+})();
+</script>
+</body>
+</html>
