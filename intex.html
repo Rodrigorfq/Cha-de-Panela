@@ -70,6 +70,131 @@
   }
   .prefs b{color:var(--ink);font-weight:600;}
 
+  .event-card{
+    margin-top:14px;
+    padding:14px 16px;
+    background:var(--forest);
+    border-radius:12px;
+    color:#fff;
+  }
+  .event-row{
+    font-size:14.5px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:4px;
+  }
+  .event-row:last-of-type{margin-bottom:8px;}
+  .event-icon{font-size:15px;}
+  .event-map-link{
+    display:inline-block;
+    font-size:12.5px;
+    font-weight:600;
+    color:#fff;
+    text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,.5);
+  }
+  .event-map-link:hover{border-bottom-color:#fff;}
+
+  .tabs{
+    display:flex;
+    gap:8px;
+    margin-top:24px;
+    border-bottom:1px solid var(--line);
+  }
+  .tab-btn{
+    flex:1;
+    padding:11px 8px;
+    background:none;
+    border:none;
+    border-bottom:2px solid transparent;
+    font-family:'Fraunces',serif;
+    font-size:16px;
+    font-weight:500;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .tab-btn.active{
+    color:var(--forest-dark);
+    border-bottom-color:var(--forest);
+  }
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .rsvp-card{
+    margin-top:22px;
+    padding:20px 18px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+  }
+  .rsvp-lead{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin:0 0 18px;
+  }
+  .rsvp-label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .rsvp-input{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:15px;
+    font-family:inherit;
+    margin-bottom:18px;
+    background:var(--cream);
+    color:var(--ink);
+  }
+  .rsvp-input:focus{outline:2px solid var(--forest);outline-offset:1px;}
+  .rsvp-choices{
+    display:flex;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .rsvp-choice{
+    flex:1;
+    padding:13px 8px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:var(--cream);
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .rsvp-choice.selected{
+    border-color:var(--forest);
+    background:var(--sage-tint);
+    color:var(--forest-dark);
+  }
+  .rsvp-qty-wrap{
+    display:none;
+    margin-top:16px;
+  }
+  .rsvp-qty-wrap.show{display:block;}
+  .rsvp-submit-btn{
+    width:100%;
+    padding:13px;
+    font-size:15px;
+    margin-top:6px;
+  }
+  .rsvp-status{
+    margin:12px 0 0;
+    font-size:13.5px;
+    text-align:center;
+    color:var(--ink-soft);
+    min-height:1.2em;
+  }
+  .rsvp-status.success{color:var(--forest-dark);font-weight:600;}
+  .rsvp-status.error{color:#a03d3d;font-weight:600;}
+
   .progress-block{
     margin-top:20px;
   }
@@ -235,6 +360,13 @@
     border-radius:10px;
   }
   .edit-panel.open{display:block;}
+  .lock-hint{
+    font-size:12.5px;
+    color:var(--clay);
+    margin:0 0 10px;
+    line-height:1.4;
+  }
+  .lock-hint b{color:var(--ink);}
   .edit-panel label{
     display:block;
     font-size:11.5px;
@@ -307,26 +439,61 @@
   <header>
     <p class="eyebrow">Chá de casa nova</p>
     <h1>Gabi &amp; Lucas</h1>
-    <p class="lead">Escolha um item da lista abaixo e coloque seu nome — assim todo mundo vê em tempo real o que já foi escolhido, direto do celular ou do computador.</p>
+    <p class="lead">Escolha um item da lista abaixo e coloque seu nome — assim todo mundo vê o que já foi escolhido, direto do celular ou do computador. Um item já escolhido só pode ser editado ou desmarcado por quem colocou o nome nele.</p>
+    <div class="event-card">
+      <div class="event-row"><span class="event-icon">📅</span> 19 de setembro, às 15h30</div>
+      <div class="event-row"><span class="event-icon">📍</span> Rua Henrique Scheid, 441 — Engenho de Dentro</div>
+      <a class="event-map-link" href="https://www.google.com/maps/search/?api=1&query=Rua+Henrique+Scheid%2C+441+Engenho+de+Dentro" target="_blank" rel="noopener">Ver no mapa ↗</a>
+    </div>
     <div class="prefs"><b>Preferências do casal:</b> bege claro, preto, branco, vidro, inox e madeira — estampa lisa para tecidos.</div>
   </header>
 
-  <div class="progress-block">
-    <div class="progress-row">
-      <span>Presentes escolhidos</span>
-      <strong id="progress-count">0 / 0</strong>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="gifts">Lista de presentes</button>
+    <button class="tab-btn" data-tab="rsvp">Confirmar presença</button>
+  </div>
+
+  <div id="tab-gifts" class="tab-panel active">
+    <div class="progress-block">
+      <div class="progress-row">
+        <span>Presentes escolhidos</span>
+        <strong id="progress-count">0 / 0</strong>
+      </div>
+      <div class="bar"><div class="bar-fill" id="progress-fill"></div></div>
     </div>
-    <div class="bar"><div class="bar-fill" id="progress-fill"></div></div>
+
+    <div class="status-row">
+      <p class="status-line" id="status-line">Carregando lista…</p>
+      <button class="refresh-btn" id="refresh-btn" title="Buscar atualizações da planilha">↻ Atualizar</button>
+    </div>
+
+    <div id="categories"></div>
+
+    <footer>Toque em um item para escolher ou editar. As alterações ficam salvas para todos os convidados.</footer>
   </div>
 
-  <div class="status-row">
-    <p class="status-line" id="status-line">Carregando lista…</p>
-    <button class="refresh-btn" id="refresh-btn" title="Buscar atualizações da planilha">↻ Atualizar</button>
+  <div id="tab-rsvp" class="tab-panel">
+    <div class="rsvp-card">
+      <p class="rsvp-lead">Conta pra gente se você vai poder vir — ajuda demais na organização!</p>
+
+      <label class="rsvp-label">Seu nome</label>
+      <input type="text" id="rsvp-name" class="rsvp-input" placeholder="Ex: Ana e Marcos">
+
+      <label class="rsvp-label">Vai poder vir?</label>
+      <div class="rsvp-choices">
+        <button type="button" class="rsvp-choice" data-val="sim">Sim, vou! 🎉</button>
+        <button type="button" class="rsvp-choice" data-val="nao">Não vou conseguir</button>
+      </div>
+
+      <div id="rsvp-qty-wrap" class="rsvp-qty-wrap">
+        <label class="rsvp-label">Quantas pessoas (incluindo você)?</label>
+        <input type="number" id="rsvp-qty" class="rsvp-input" min="1" value="1">
+      </div>
+
+      <button id="rsvp-submit" class="btn btn-primary rsvp-submit-btn">Enviar confirmação</button>
+      <p class="rsvp-status" id="rsvp-status"></p>
+    </div>
   </div>
-
-  <div id="categories"></div>
-
-  <footer>Toque em um item para escolher ou editar. As alterações ficam salvas para todos os convidados.</footer>
 </div>
 
 <script>
@@ -472,7 +639,7 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9o6GyleuaL2GA
 const FIRST_DATA_ROW = 3;
 itemDefs.forEach((def, idx) => { def.row = FIRST_DATA_ROW + idx; });
 
-function syncToSheet(def, s){
+function syncToSheet(def, s, prev){
   if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("http") !== 0) return;
   try{
     fetch(APPS_SCRIPT_URL, {
@@ -480,16 +647,34 @@ function syncToSheet(def, s){
       mode: "no-cors",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({
+        type: "gift",
         row: def.row,
         item: def.name,
         category: def.category,
         taken: s.taken,
-        reservedBy: s.reservedBy || ""
+        reservedBy: s.reservedBy || "",
+        // O Apps Script só grava se a planilha ainda estiver como o site
+        // via pela última vez — protege contra duas pessoas mexendo ao
+        // mesmo tempo, ou alguém chamando a URL direto por fora do site.
+        previousTaken: !!(prev && prev.taken),
+        previousReservedBy: (prev && prev.reservedBy) || ""
       })
     });
   }catch(e){
     console.error("Falha ao sincronizar com a planilha", e);
   }
+  // Como não dá pra ler a resposta desse tipo de chamada, conferimos
+  // pouco depois direto na planilha, para o caso da gravação ter sido
+  // recusada (nome não conferia) e a tela ter ficado desatualizada.
+  setTimeout(async () => {
+    const fromSheet = await fetchFromSheet();
+    if(fromSheet){
+      state = fromSheet;
+      await cacheLocally();
+      render();
+      setStatus(true);
+    }
+  }, 1400);
 }
 
 const STORAGE_KEY = "registry-state-v1";
@@ -637,8 +822,9 @@ function renderItem(def){
   const panel = document.createElement("div");
   panel.className = "edit-panel";
   panel.innerHTML = `
+    ${s.taken ? `<p class="lock-hint">Já escolhido por <b>${escapeHtml(s.reservedBy || "alguém")}</b>. Para editar ou desmarcar, confirme digitando esse mesmo nome abaixo.</p>` : ""}
     <label>Seu nome</label>
-    <input type="text" class="name-input" placeholder="Ex: Ana e Marcos" value="${escapeHtml(s.reservedBy || "")}">
+    <input type="text" class="name-input" placeholder="${s.taken ? 'Confirme o nome já registrado' : 'Ex: Ana e Marcos'}" value="${escapeHtml(s.reservedBy || "")}">
     <div class="edit-actions">
       <button class="btn btn-primary btn-save">Confirmar</button>
       ${s.taken ? '<button class="btn btn-ghost btn-clear">Desmarcar</button>' : '<button class="btn btn-ghost btn-cancel">Cancelar</button>'}
@@ -655,9 +841,18 @@ function renderItem(def){
   panel.querySelector(".btn-save").addEventListener("click", async (e) => {
     e.stopPropagation();
     const val = panel.querySelector(".name-input").value.trim();
+    if(!val){
+      alert("Digite seu nome antes de confirmar.");
+      return;
+    }
+    if(s.taken && !namesMatch(val, s.reservedBy)){
+      alert('Este presente já foi escolhido por "' + (s.reservedBy || "alguém") + '". Para trocar, digite exatamente esse nome no campo. Se não foi você quem escolheu, avise o organizador da lista.');
+      return;
+    }
+    const prev = { taken: s.taken, reservedBy: s.reservedBy };
     state[def.id] = { taken: true, reservedBy: val };
     await saveState();
-    syncToSheet(def, state[def.id]);
+    syncToSheet(def, state[def.id], prev);
     render();
     document.getElementById("status-line").textContent = "Presente confirmado — enviando para a planilha…";
   });
@@ -673,9 +868,15 @@ function renderItem(def){
   if(clearBtn){
     clearBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
+      const typed = panel.querySelector(".name-input").value.trim();
+      if(!namesMatch(typed, s.reservedBy)){
+        alert('Para desmarcar, confirme digitando o nome de quem escolheu: "' + (s.reservedBy || "") + '". Se não foi você, avise o organizador da lista.');
+        return;
+      }
+      const prev = { taken: s.taken, reservedBy: s.reservedBy };
       state[def.id] = { taken: false, reservedBy: "" };
       await saveState();
-      syncToSheet(def, state[def.id]);
+      syncToSheet(def, state[def.id], prev);
       render();
       document.getElementById("status-line").textContent = "Item desmarcado — enviando para a planilha…";
     });
@@ -692,13 +893,98 @@ function metaText(s){
   return "Já escolhido";
 }
 
+function namesMatch(a, b){
+  return (a || "").trim().toLowerCase() === (b || "").trim().toLowerCase();
+}
+
 function escapeHtml(str){
   const d = document.createElement("div");
   d.textContent = str;
   return d.innerHTML;
 }
 
+function setupTabs(){
+  const buttons = document.querySelectorAll(".tab-btn");
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      buttons.forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+    });
+  });
+}
+
+function setupRsvp(){
+  let selected = null;
+  const choices = document.querySelectorAll(".rsvp-choice");
+  const qtyWrap = document.getElementById("rsvp-qty-wrap");
+  const statusEl = document.getElementById("rsvp-status");
+  const submitBtn = document.getElementById("rsvp-submit");
+
+  choices.forEach(btn => {
+    btn.addEventListener("click", () => {
+      selected = btn.dataset.val;
+      choices.forEach(b => b.classList.toggle("selected", b === btn));
+      qtyWrap.classList.toggle("show", selected === "sim");
+    });
+  });
+
+  submitBtn.addEventListener("click", async () => {
+    const name = document.getElementById("rsvp-name").value.trim();
+    statusEl.className = "rsvp-status";
+
+    if(!name){
+      statusEl.textContent = "Digite seu nome antes de enviar.";
+      statusEl.className = "rsvp-status error";
+      return;
+    }
+    if(!selected){
+      statusEl.textContent = "Escolha se você vai ou não antes de enviar.";
+      statusEl.className = "rsvp-status error";
+      return;
+    }
+    if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("http") !== 0){
+      statusEl.textContent = "A confirmação ainda não está conectada à planilha.";
+      statusEl.className = "rsvp-status error";
+      return;
+    }
+
+    const qtyInput = document.getElementById("rsvp-qty");
+    const qty = selected === "sim" ? (Number(qtyInput.value) || 1) : 0;
+
+    submitBtn.disabled = true;
+    statusEl.textContent = "Enviando…";
+
+    try{
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          type: "rsvp",
+          name: name,
+          going: selected === "sim",
+          qty: qty
+        })
+      });
+      statusEl.textContent = selected === "sim"
+        ? "Confirmação enviada — até o dia 19! 🎉"
+        : "Confirmação enviada — sentiremos sua falta!";
+      statusEl.className = "rsvp-status success";
+    }catch(e){
+      console.error("Falha ao enviar confirmação", e);
+      statusEl.textContent = "Não foi possível enviar agora. Tente de novo em instantes.";
+      statusEl.className = "rsvp-status error";
+    }finally{
+      submitBtn.disabled = false;
+    }
+  });
+}
+
 (async function init(){
+  setupTabs();
+  setupRsvp();
   openCategories.add(CATEGORIES[0].name);
   const ok = await loadState();
   render();
